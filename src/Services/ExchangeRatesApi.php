@@ -33,12 +33,18 @@ class ExchangeRatesApi implements ExchangeRateService
         }
 
         if (! isset($this->cache[$currencyCode])) {
+            $url = $this->serviceUrl . '?access_key=' . $this->apiKey
+                . '&symbols=' . $currencyCode
+                . '&base=' . $this->baseCurrency;
+
             $jsonData = $this->httpClient->getJsonAsArray(
-                url: $this->serviceUrl . '/?access_key='.$this->apiKey.'&symbols=' . $currencyCode . '&base=' . $this->baseCurrency,
+                url: $url,
             );
+
             if (empty($jsonData) || !isset($jsonData['rates'][$currencyCode])) {
                 throw new \InvalidArgumentException('Rate data not found for currency: ' . $currencyCode);
             }
+
             $this->cache[$currencyCode] = $jsonData['rates'][$currencyCode];
         }
 
