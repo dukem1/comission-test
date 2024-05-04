@@ -77,7 +77,7 @@ class CommissionCalculatorTest extends TestCase
         $commission = $calculator->getCommission($transaction);
 
         $this->assertIsFloat($commission);
-        $this->assertEquals(1.077179 ,$commission);
+        $this->assertEquals(1.08 ,$commission);
     }
 
     public function testGetCommissionNonEU()
@@ -141,6 +141,6 @@ class CommissionCalculatorTest extends TestCase
         $commission = $calculator->getCommission($transaction);
 
         $this->assertIsFloat($commission);
-        $this->assertEquals(2.154358 ,$commission);
+        $this->assertEquals(2.16 ,$commission);
     }
 }

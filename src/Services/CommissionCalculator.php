@@ -6,6 +6,7 @@ use Contracts\BinDataService;
 use Contracts\ExchangeRateService;
 use Contracts\RegionResolver;
 use DTO\Transaction;
+use Helpers\Math;
 
 class CommissionCalculator
 {
@@ -26,9 +27,9 @@ class CommissionCalculator
         $binData = $this->binDataService->getData($transaction->bin);
 
         if ($this->regionResolver->containsCountry($binData->countryCode)) {
-            return $this->regionModifier * $baseAmount;
+            return Math::roundUp($this->regionModifier * $baseAmount);
         } else {
-            return $this->outsideRegionModifier * $baseAmount;
+            return Math::roundUp($this->outsideRegionModifier * $baseAmount);
         }
     }
 }
