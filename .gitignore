@@ -3,3 +3,4 @@
 .idea
 input.txt
 vendor
+.env

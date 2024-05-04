@@ -10,6 +10,7 @@ class ApiLayerExchangeRate implements ExchangeRateService
     private string $serviceUrl;
     private string $apiKey;
     private string $baseCurrency;
+    private array $cache = [];
 
     public function __construct(
         private readonly HttpClient $httpClient
@@ -27,17 +28,20 @@ class ApiLayerExchangeRate implements ExchangeRateService
 
     public function getRate(string $currencyCode): float
     {
-        $jsonData = $this->httpClient->getJsonAsArray(
-            url: $this->serviceUrl . '/?symbols=' . $currencyCode . '&base=' . $this->baseCurrency,
-            headers: [
-                'Content-Type: text/plain',
-                'apikey: ' . $this->apiKey,
-            ]
-        );
-        if (empty($jsonData) || !isset($jsonData['rates'][$currencyCode])) {
-            throw new \InvalidArgumentException('Rate data not found for currency: ' . $currencyCode);
+        if (! isset($this->cache[$currencyCode])) {
+            $jsonData = $this->httpClient->getJsonAsArray(
+                url: $this->serviceUrl . '/?symbols=' . $currencyCode . '&base=' . $this->baseCurrency,
+                headers: [
+                    'Content-Type: text/plain',
+                    'apikey: ' . $this->apiKey,
+                ]
+            );
+            if (empty($jsonData) || !isset($jsonData['rates'][$currencyCode])) {
+                throw new \InvalidArgumentException('Rate data not found for currency: ' . $currencyCode);
+            }
+            $this->cache[$currencyCode] = $jsonData['rates'][$currencyCode];
         }
 
-        return $jsonData['rates'][$currencyCode];
+        return $this->cache[$currencyCode];
     }
 }

@@ -9,6 +9,7 @@ use DTO\BinData;
 class BinListService implements BinDataService
 {
     private string $serviceUrl;
+    private array $cache = [];
 
     public function __construct(
         private readonly HttpClient $httpClient
@@ -21,9 +22,14 @@ class BinListService implements BinDataService
 
     public function getData(int $bin): BinData
     {
-        $jsonData = $this->httpClient->getJsonAsArray($this->serviceUrl . '/' . $bin);
-        if (empty($jsonData)) {
-            throw new \InvalidArgumentException('Bin data not found for bin: ' . $bin);
+        if (isset($this->cache[$bin])) {
+            $jsonData = $this->cache[$bin];
+        } else {
+            $jsonData = $this->httpClient->getJsonAsArray($this->serviceUrl . '/' . $bin);
+            if (empty($jsonData)) {
+                throw new \InvalidArgumentException('Bin data not found for bin: ' . $bin);
+            }
+            $this->cache[$bin] = $jsonData;
         }
 
         $binData = new BinData();
