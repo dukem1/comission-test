@@ -23,6 +23,9 @@ class FileLoader implements TransactionLoader
         $this->fileReader->open($this->filePath);
         while (!$this->fileReader->eof()) {
             $lineContent = $this->fileReader->fgets();
+            if (empty($lineContent)) {
+                continue;
+            }
 
             $transaction = Transaction::fromString($lineContent);
 

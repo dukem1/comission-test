@@ -28,6 +28,10 @@ class ApiLayerExchangeRate implements ExchangeRateService
 
     public function getRate(string $currencyCode): float
     {
+        if ($currencyCode === $this->baseCurrency) {
+            return 1;
+        }
+
         if (! isset($this->cache[$currencyCode])) {
             $jsonData = $this->httpClient->getJsonAsArray(
                 url: $this->serviceUrl . '/?symbols=' . $currencyCode . '&base=' . $this->baseCurrency,
