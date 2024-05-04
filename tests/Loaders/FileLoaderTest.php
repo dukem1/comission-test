@@ -5,7 +5,7 @@ namespace Loaders;
 use DTO\Transaction;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use SplFileObject;
+use Services\SplFileObjectReader;
 
 class FileLoaderTest extends TestCase
 {
@@ -14,9 +14,7 @@ class FileLoaderTest extends TestCase
      */
     public function testFileLoader(): void
     {
-        $fileReaderMock = $this->getMockBuilder(SplFileObject::class)
-            ->setConstructorArgs(['php://memory'])
-            ->getMock();
+        $fileReaderMock = $this->createMock(SplFileObjectReader::class);
         $fileReaderMock
             ->expects($this->any())
             ->method('fgets')

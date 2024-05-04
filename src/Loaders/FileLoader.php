@@ -2,15 +2,15 @@
 
 namespace Loaders;
 
+use Contracts\FileLineReader;
 use Contracts\TransactionLoader;
 use DTO\Transaction;
-use SplFileObject;
 
 class FileLoader implements TransactionLoader
 {
     public function __construct(
         private readonly string $filePath,
-        private ?SplFileObject $fileReader = null // Mocking of SplFileObject works only this way :(
+        private readonly FileLineReader $fileReader
     ) {}
 
     /**
@@ -19,17 +19,16 @@ class FileLoader implements TransactionLoader
     public function load(): array
     {
         $result = [];
-        if (! $this->fileReader) {
-            $this->fileReader = new SplFileObject($this->filePath);
-        }
-        $file = $this->fileReader;
-        while (!$file->eof()) {
-            $lineContent = $file->fgets();
+
+        $this->fileReader->open($this->filePath);
+        while (!$this->fileReader->eof()) {
+            $lineContent = $this->fileReader->fgets();
 
             $transaction = Transaction::fromString($lineContent);
 
             $result[] = $transaction;
         }
+        $this->fileReader->close();
 
         return $result;
     }
