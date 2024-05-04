@@ -5,12 +5,12 @@ namespace Services;
 use Contracts\HttpClient;
 use PHPUnit\Framework\TestCase;
 
-class ApiLayerExchangeRateTest extends TestCase
+class ExchangeRatesApiTest extends TestCase
 {
     protected function setUp(): void
     {
-        $_ENV['APILAYER_RATES_URL'] = 'https://example.com/';
-        $_ENV['APILAYER_KEY'] = 'randomString';
+        $_ENV['EXCHANGERATESAPI_URL'] = 'https://example.com/';
+        $_ENV['EXCHANGERATESAPI_KEY'] = 'randomString';
 
         parent::setUp();
     }
@@ -33,8 +33,8 @@ class ApiLayerExchangeRateTest extends TestCase
             ]);
 
 
-        $apiLayerExchangeRate = new ApiLayerExchangeRate(httpClient: $httpClientMock);
-        $rate = $apiLayerExchangeRate->getRate('USD');
+        $exchangeRatesApi = new ExchangeRatesApi(httpClient: $httpClientMock);
+        $rate = $exchangeRatesApi->getRate('USD');
 
         $this->assertIsFloat($rate);
         $this->assertEquals(1.077179, $rate);
@@ -42,7 +42,7 @@ class ApiLayerExchangeRateTest extends TestCase
 
     public function testNoUrlInEnvironmentException()
     {
-        unset($_ENV['APILAYER_RATES_URL']);
+        unset($_ENV['EXCHANGERATESAPI_URL']);
 
         $httpClientMock = $this->getMockBuilder(HttpClient::class)
             ->disableOriginalConstructor()
@@ -50,12 +50,12 @@ class ApiLayerExchangeRateTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
 
-        new ApiLayerExchangeRate(httpClient: $httpClientMock);
+        new ExchangeRatesApi(httpClient: $httpClientMock);
     }
 
     public function testNoApiKeyInEnvironmentException()
     {
-        unset($_ENV['APILAYER_KEY']);
+        unset($_ENV['EXCHANGERATESAPI_KEY']);
 
         $httpClientMock = $this->getMockBuilder(HttpClient::class)
             ->disableOriginalConstructor()
@@ -63,7 +63,7 @@ class ApiLayerExchangeRateTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
 
-        new ApiLayerExchangeRate(httpClient: $httpClientMock);
+        new ExchangeRatesApi(httpClient: $httpClientMock);
     }
 
     public function testNoDataForCurrencyCodeException()
@@ -77,7 +77,7 @@ class ApiLayerExchangeRateTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
 
-        $apiLayerExchangeRate = new ApiLayerExchangeRate(httpClient: $httpClientMock);
-        $apiLayerExchangeRate->getRate('USD');
+        $exchangeRatesApi = new ExchangeRatesApi(httpClient: $httpClientMock);
+        $exchangeRatesApi->getRate('USD');
     }
 }
