@@ -3,7 +3,6 @@
 namespace Loaders;
 
 use DTO\Transaction;
-use Helpers\SplFileObjectWrapper;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use SplFileObject;

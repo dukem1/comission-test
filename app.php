@@ -1,4 +1,8 @@
 <?php
+use Symfony\Component\Dotenv\Dotenv;
+
+$dotenv = new Dotenv();
+$dotenv->load(__DIR__.'/.env');
 
 foreach (explode("\n", file_get_contents($argv[1])) as $row) {
 
