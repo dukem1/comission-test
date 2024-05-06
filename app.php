@@ -7,8 +7,15 @@ use Symfony\Component\Dotenv\Dotenv;
 $dotenv = new Dotenv();
 $dotenv->load(__DIR__.'/.env');
 
+if (! isset($argv[1])) {
+    throw new InvalidArgumentException('You must provide a transaction file path.');
+}
 if (! file_exists($argv[1]) || is_dir($argv[1])) {
     throw new InvalidArgumentException('File not found');
+}
+
+if (! isset($argv[$_ENV['REGION_MODIFIER']]) || ! isset($argv[$_ENV['OUTSIDE_REGION_MODIFIER']])) {
+    throw new InvalidArgumentException('Commission modifiers not found');
 }
 
 $fileReader = new \Services\SplFileObjectReader();
@@ -26,8 +33,8 @@ $commissionCalculator = new CommissionCalculator(
     binDataService: $binDataService,
     exchangeRateService: $exchangeRateService,
     regionResolver: $regionResolver,
-    regionModifier: 0.01,
-    outsideRegionModifier: 0.02
+    regionModifier: $_ENV['REGION_MODIFIER'],
+    outsideRegionModifier: $_ENV['OUTSIDE_REGION_MODIFIER'],
 );
 
 foreach ($transactions as $transaction) {
