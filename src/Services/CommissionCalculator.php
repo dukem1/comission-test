@@ -27,9 +27,9 @@ class CommissionCalculator
         $binData = $this->binDataService->getData($transaction->bin);
 
         if ($this->regionResolver->containsCountry($binData->countryCode)) {
-            return Math::roundUp($this->regionModifier * $baseAmount);
+            return Math::amountRoundUp($this->regionModifier * $baseAmount);
         } else {
-            return Math::roundUp($this->outsideRegionModifier * $baseAmount);
+            return Math::amountRoundUp($this->outsideRegionModifier * $baseAmount);
         }
     }
 }
