@@ -14,7 +14,7 @@ if (! file_exists($argv[1]) || is_dir($argv[1])) {
     throw new InvalidArgumentException('File not found');
 }
 
-if (! isset($argv[$_ENV['REGION_MODIFIER']]) || ! isset($argv[$_ENV['OUTSIDE_REGION_MODIFIER']])) {
+if (! isset($_ENV['REGION_MODIFIER']) || ! isset($_ENV['OUTSIDE_REGION_MODIFIER'])) {
     throw new InvalidArgumentException('Commission modifiers not found');
 }
 
